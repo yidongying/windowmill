@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>风车2.0</title>
+	<style>
+		*{margin:0;padding:0;}
+		html,body{width: 100%;height: 100%;}
+		#fc-con{width: 800px;height:600px;
+			position:absolute;margin:auto;left:0;top:0;
+			bottom:0;right:0;
+			font-size:0;
+			background-position:50% 50%;/*设置中心点，与容器中心点重叠*/
+			background-size:100% 100%;
+			animation-duration: 0.8s;
+			animation-fill-mode: forwards;
+			animation-timing-function: ease;
+		}
+		@keyframes show{
+			from{background-size:400% 400%;}
+			to{background-size:100% 100%;}
+		}
+		.fc-part{width: 50%;height: 50%;display:inline-block;
+			background-size:200% 200%;
+			background-repeat: no-repeat;}
+		#fc-con>span{position: absolute;top:50%;
+			font-weight:bolder;color:#fff;
+			width: 10%;height: 80px;
+			line-height:80px;
+			font-size:60px;
+			height:10px;z-index:100;
+			text-align: center;
+			cursor:pointer;
+			transform: translateY(-50%) rotateX(0deg);
+			transition:all 0.3s ease;
+		}
+		#fc-con>span:hover{color:#ccc;transform: :translateY(-50%) rotateX(30deg);}
+		span.fc-left{left:40px;}
+		span.fc-right{right:40px;}
+		
+	</style>
+	<script src="jquery.min.js"></script>
+	<script>
+	var curIndex=1;
+	var picPaths=[
+			"images/pic1.jpg",
+			"images/pic2.jpg",
+			"images/pic3.jpg",
+			"images/pic4.jpg"
+		];
+
+	function　P(x,y){
+		this['background-position-x']=x+'%';
+		this['background-position-y']=y+'%';
+	}
+	var POSITION={
+			PART1:{BEGIN:new P(0,0),END:new P(0,-100)},
+			PART2:{BEGIN:new P(100,0),END:new P(200,0)},
+			PART3:{BEGIN:new P(0,100),END:new P(-100,100)},
+			PART4:{BEGIN:new P(100,100),END:new P(100,200)}
+		};
+	$(function(){
+		$('#fc-con').css('background-image','url('+picPaths[curIndex-1]+')');
+		$('#fc-con>span').on('click',function(){
+			 if($('#fc-con').css('animationName')=='show') return;//防止连续快速点击
+			//退场动画
+			$(this).siblings('.fc-part').css('background-image','url('+picPaths[curIndex-1]+')').each(function(i,v){
+					$(v).css(POSITION['PART'+(i+1)].BEGIN).animate(POSITION['PART'+(i+1)].END,800);
+			});
+			//进场动画
+			curIndex=curIndex+1>picPaths.length?1:curIndex+1;
+			$(this).parent().css({'background-image':'url('+picPaths[curIndex-1]+')','animationName':'show'});
+			setTimeout(function(){
+				$('#fc-con').css('animationName','');
+			},900);
+		});
+	});
+	</script>
+</head>
+<body>
+	<div id="fc-con">
+	<div class="fc-part fc-part1"></div>
+	<div class="fc-part fc-part2"></div>
+	<div class="fc-part fc-part3"></div>
+	<div class="fc-part fc-part4"></div>
+	<span class="fc-left">&lt;</span>
+	<span class="fc-right">&gt;</span>
+	</div>
+</body>
+</html>
